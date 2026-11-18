@@ -3,6 +3,9 @@
 Export Miro boards to tldraw (`.tldr`) with a Windows desktop app.
 Obsidian Canvas, draw.io, Markdown, and Obsidian's tldraw format are also available.
 
+This fork adds a Windows graphical interface to
+[essoen's Miro board exporter](https://github.com/essoen/miroboard-export-tool)
+
 **[Download for Windows (64-bit)](https://github.com/SabulineHorizon/miroboard-export-tool/releases/download/gui-v0.1.0/Miro-Board-Exporter-0.1.0-portable.exe)**
 · [Releases](https://github.com/SabulineHorizon/miroboard-export-tool/releases)
 
