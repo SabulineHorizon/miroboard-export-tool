@@ -1,5 +1,19 @@
 # Publication validation — November 18, 2026
 
+## v0.1.1 licensing release — November 18, 2026
+
+- Built the CLI and Windows desktop application with package version 0.1.1.
+- Packaged GUI integration passed against the offline API fixture: board URL/ID,
+  all output formats, tldraw grid size, token clearing, sanitized errors, and
+  window security settings. No live Miro export was performed for this update.
+- Packaged `LICENSE`, `THIRD_PARTY_NOTICES.txt`, and `legal/` files match their
+  source copies. Electron and Chromium notices are present. All 28 packaged
+  dependency manifests with names and versions are covered by the notices.
+- Dependency lock entries match v0.1.0, so the supplemental dependency notices
+  also apply to the original release. Export implementation is unchanged.
+- Release checksums are generated from the final assets and upload digests are
+  checked during publication. The v0.1.0 executable and source tag are retained.
+
 Internal validation record for contributors. For usage and current limitations,
 see the [README](README.md).
 

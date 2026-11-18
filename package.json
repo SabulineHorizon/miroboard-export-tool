@@ -1,6 +1,6 @@
 {
   "name": "miro-migrator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Export Miro boards to tldraw, Obsidian Canvas, draw.io, and Markdown",
   "type": "module",
   "main": "desktop-dist/main.cjs",
@@ -37,9 +37,18 @@
     ],
     "asar": true,
     "extraFiles": [
-      { "from": "LICENSE", "to": "LICENSE" },
-      { "from": "THIRD_PARTY_NOTICES.txt", "to": "THIRD_PARTY_NOTICES.txt" },
-      { "from": "legal", "to": "legal" }
+      {
+        "from": "LICENSE",
+        "to": "LICENSE"
+      },
+      {
+        "from": "THIRD_PARTY_NOTICES.txt",
+        "to": "THIRD_PARTY_NOTICES.txt"
+      },
+      {
+        "from": "legal",
+        "to": "legal"
+      }
     ],
     "npmRebuild": false,
     "win": {

@@ -25,7 +25,7 @@ blocked Electron's install script, run `node node_modules/electron/install.js`
 before launching.
 
 ```powershell
-npm run dist:win  # release/Miro-Board-Exporter-0.1.0-portable.exe
+npm run dist:win  # release/Miro-Board-Exporter-0.1.1-portable.exe
 npm run pack:win  # release/win-unpacked/Miro Board Exporter.exe
 ```
 
