@@ -1,15 +1,10 @@
 import { Command } from "commander";
-import { writeFile, mkdir, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { join, basename, relative, resolve, dirname, parse } from "node:path";
+import { join, relative, resolve, dirname, parse } from "node:path";
 import { homedir } from "node:os";
 import { createInterface } from "node:readline/promises";
-import { extractBoard } from "./extract/miro-extractor.js";
-import { generateCanvas } from "./generate/canvas/canvas-generator.js";
-import { generateMarkdown } from "./generate/markdown/markdown-generator.js";
-import { generateTldraw } from "./generate/tldraw/tldraw-generator.js";
-import { wrapTldrawForObsidian } from "./generate/tldraw/tldraw-obsidian-wrapper.js";
-import { generateDrawio } from "./generate/drawio/drawio-generator.js";
+import { exportBoard } from "./export-board.js";
 import { createProgressHandler, finishProgress } from "./utils/progress.js";
 
 function expandHome(p: string): string {
@@ -289,11 +284,12 @@ export function createCli(): Command {
 
       // Extract board data from Miro (with progress bar)
       const onProgress = verbose ? undefined : createProgressHandler();
-      const { board, stats } = await extractBoard({
+      const { board, stats } = await exportBoard({
+        formats, tldrawFormat, dryRun, onStatus: console.log,
         token,
         boardId,
         downloadImages: downloadImages && !dryRun,
-        outputDir: dryRun ? undefined : outputDir,
+        outputDir,
         verbose,
         onProgress,
         assetPathPrefix,
@@ -315,63 +311,6 @@ export function createCli(): Command {
           console.log(`  ${type}: ${count}`);
         }
         return;
-      }
-
-      await mkdir(outputDir, { recursive: true });
-
-      const boardBasename = board.name
-        .replace(/[<>:"/\\|?*]/g, "")
-        .replace(/\s+/g, "-");
-
-      // Generate Canvas
-      if (formats.includes("canvas")) {
-        const canvasJson = generateCanvas(board);
-        const canvasFilename = `${boardBasename}.canvas`;
-        const canvasPath = join(outputDir, canvasFilename);
-        await writeFile(canvasPath, canvasJson, "utf-8");
-        console.log(`Written: ${canvasPath}`);
-      }
-
-      // Generate Markdown
-      if (formats.includes("markdown")) {
-        const canvasFilename = formats.includes("canvas")
-          ? `${boardBasename}.canvas`
-          : undefined;
-        const mdFiles = generateMarkdown(board, canvasFilename);
-        const mdDir = join(outputDir, "miro-notes");
-        await mkdir(mdDir, { recursive: true });
-
-        for (const file of mdFiles) {
-          const filePath = join(mdDir, file.filename);
-          await writeFile(filePath, file.content, "utf-8");
-        }
-        console.log(`Written: ${mdFiles.length} markdown files to ${mdDir}`);
-      }
-
-      // Generate tldraw
-      if (formats.includes("tldraw")) {
-        if (tldrawFormat === "tldr" || tldrawFormat === "both") {
-          const tldrJson = generateTldraw(board, { useLocalAssets: false });
-          const tldrPath = join(outputDir, `${boardBasename}.tldr`);
-          await writeFile(tldrPath, tldrJson, "utf-8");
-          console.log(`Written: ${tldrPath}`);
-        }
-
-        if (tldrawFormat === "obsidian" || tldrawFormat === "both") {
-          const tldrJson = generateTldraw(board, { useLocalAssets: true });
-          const obsidianMd = wrapTldrawForObsidian(tldrJson);
-          const tldrawMdPath = join(outputDir, `${boardBasename}.tldraw.md`);
-          await writeFile(tldrawMdPath, obsidianMd, "utf-8");
-          console.log(`Written: ${tldrawMdPath}`);
-        }
-      }
-
-      // Generate draw.io
-      if (formats.includes("drawio")) {
-        const drawioXml = generateDrawio(board);
-        const drawioPath = join(outputDir, `${boardBasename}.drawio`);
-        await writeFile(drawioPath, drawioXml, "utf-8");
-        console.log(`Written: ${drawioPath}`);
       }
 
       console.log("\nDone!");

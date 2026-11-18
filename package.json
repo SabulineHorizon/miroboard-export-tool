@@ -1,24 +1,71 @@
 {
   "name": "miro-migrator",
-  "version": "0.1.0",
-  "description": "Migrate Miro boards to Obsidian Canvas and Markdown",
+  "version": "0.1.1",
+  "description": "Export Miro boards to tldraw, Obsidian Canvas, draw.io, and Markdown",
   "type": "module",
+  "main": "desktop-dist/main.cjs",
   "bin": {
     "miro-migrate": "./dist/index.js"
   },
   "scripts": {
+    "licenses": "node scripts/generate-notices.mjs",
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "build:desktop": "node scripts/build-desktop.mjs",
+    "desktop": "npm run build:desktop && electron .",
+    "pack:win": "npm run build:desktop && electron-builder --win --x64 --dir",
+    "dist:win": "npm run build:desktop && electron-builder --win portable --x64",
+    "test:desktop": "node scripts/test-desktop.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
     "node": ">=20.0.0"
   },
   "license": "MIT",
+  "build": {
+    "appId": "org.miroboardexport.desktop",
+    "productName": "Miro Board Exporter",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "desktop-dist/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "extraFiles": [
+      {
+        "from": "LICENSE",
+        "to": "LICENSE"
+      },
+      {
+        "from": "THIRD_PARTY_NOTICES.txt",
+        "to": "THIRD_PARTY_NOTICES.txt"
+      },
+      {
+        "from": "legal",
+        "to": "legal"
+      }
+    ],
+    "npmRebuild": false,
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "Miro-Board-Exporter-${version}-portable.exe"
+    }
+  },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "@types/node": "^25.3.0",
+    "electron": "^45.3.2",
+    "electron-builder": "^26.18.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Miro Board Exporter</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="renderer.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><span class="eyebrow">YOUR BOARDS, MORE POSSIBILITIES</span><h1>Miro Board Exporter</h1><p>Move a board into the tools you use.</p></header>
+    <form id="export-form">
+      <fieldset id="settings">
+        <label for="board">Board URL or ID</label>
+        <input id="board" type="text" required placeholder="https://miro.com/app/board/…" maxlength="1000" autocomplete="off" spellcheck="false">
+        <label for="token">OAuth access token</label>
+        <input id="token" type="password" required autocomplete="off" spellcheck="false" maxlength="8192" aria-describedby="token-hint">
+        <p class="hint" id="token-hint">Requires boards:read and access to the board. Kept in memory for this export only.</p>
+        <label for="format">Export format</label>
+        <select id="format"><option value="tldraw">tldraw (.tldr)</option><option value="canvas">Obsidian Canvas (.canvas)</option><option value="drawio">draw.io (.drawio)</option><option value="markdown">Markdown (.md)</option><option value="all">All formats</option></select>
+        <div id="tldraw-options"><label for="tldraw-format">tldraw output</label><select id="tldraw-format"><option value="tldr">Standard .tldr</option><option value="obsidian">Obsidian .tldraw.md</option><option value="both">Both</option></select></div>
+        <label for="output">Output folder</label>
+        <div class="folder"><input id="output" type="text" readonly placeholder="Choose a folder…"><button id="browse" type="button" class="secondary">Browse…</button></div>
+        <p class="hint">For Obsidian, select the vault root so asset links resolve. Exports with matching names are replaced.</p>
+        <label class="check"><input id="images" type="checkbox" checked> Download images and documents</label>
+      </fieldset>
+      <div class="actions"><button id="export" type="submit">Export board</button><button id="open-folder" type="button" class="secondary" disabled>Open output folder</button></div>
+    </form>
+    <section class="status" aria-live="polite" aria-atomic="true"><progress id="progress" hidden></progress><p id="status">Choose a board and output folder to get started.</p></section>
+  </main>
+</body>
+</html>

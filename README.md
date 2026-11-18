@@ -1,110 +1,102 @@
-# miro-migrator
+# Miro Board Exporter
 
-Migrate Miro boards to Obsidian Canvas, tldraw, draw.io, and Markdown via the Miro REST API.
+Export Miro boards to tldraw (`.tldr`) with a Windows desktop app.
+Obsidian Canvas, draw.io, Markdown, and Obsidian's tldraw format are also available.
 
-## Output Formats
+This fork adds a Windows graphical interface to
+[essoen's Miro board exporter](https://github.com/essoen/miroboard-export-tool)
 
-- **Canvas** (`.canvas`) — Obsidian Canvas JSON spec
-- **tldraw** (`.tldr`) — for [tldraw.com](https://tldraw.com) or any tldraw-compatible tool
-- **tldraw for Obsidian** (`.tldraw.md`) — for the [tldraw-in-obsidian](https://github.com/holxsam/tldraw-in-obsidian) plugin
-- **draw.io** (`.drawio`) — mxGraph XML for [draw.io / diagrams.net](https://www.diagrams.net)
-- **Markdown** (`.md`) — individual notes per item + board index
+**[Download for Windows (64-bit)](https://github.com/SabulineHorizon/miroboard-export-tool/releases/download/gui-v0.1.1/Miro-Board-Exporter-0.1.1-portable.exe)**
+· [Releases](https://github.com/SabulineHorizon/miroboard-export-tool/releases)
 
-## Usage
+## Quick start
 
-```bash
-# Interactive mode — prompts for token and options
-npx tsx src/index.ts https://miro.com/app/board/BOARD_ID/
+1. Download and open **Miro-Board-Exporter-0.1.1-portable.exe**.
+2. Paste your Miro board's URL into **Board URL or ID**.
+3. Paste a [Miro access token](#get-a-miro-access-token) into **OAuth access token**.
+4. Leave **Export format** set to **tldraw (.tldr)** and **tldraw output** set to
+   **Standard .tldr**.
+5. Click **Browse…** to choose an output folder, then **Export board**.
+6. When the export finishes, click **Open output folder** and open the `.tldr`
+   file in [tldraw](https://tldraw.com).
 
-# Export all formats to an Obsidian vault (outputs to ~/vault/miro-export/)
-MIRO_ACCESS_TOKEN=xxx npx tsx src/index.ts BOARD_ID \
-  --vault ~/path/to/vault \
-  --format canvas,markdown,tldraw,drawio
+Matching filenames are overwritten. Use a new folder to keep an earlier export.
 
-# Export draw.io only
-MIRO_ACCESS_TOKEN=xxx npx tsx src/index.ts BOARD_ID --format drawio
+<img src="docs/images/desktop-gui.png" alt="Miro Board Exporter with fields for a board URL, access token, export format, and output folder." width="620">
 
-# Export tldraw only (.tldr for tldraw.com)
-MIRO_ACCESS_TOKEN=xxx npx tsx src/index.ts BOARD_ID \
-  --format tldraw --tldraw-format tldr
+## Get a Miro access token
 
-# Dry run (no files written)
-MIRO_ACCESS_TOKEN=xxx npx tsx src/index.ts BOARD_ID --dry-run
-```
+The exporter needs an access token with **`boards:read`** permission for your
+board's team.
 
-### Options
+1. In Miro, go to **Settings → Your apps** and create an app. Miro may first ask
+   you to create a Developer team.
+2. In the app settings, enable **`boards:read`** and save.
+3. Choose **Install app and get OAuth token**, select your board's team, and
+   authorize the app. Copy the access token.
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `-t, --token <token>` | Miro access token (or `MIRO_ACCESS_TOKEN` env, or `token` file in cwd) | — |
-| `-o, --output <dir>` | Output directory | `./miro-export` |
-| `-f, --format <fmts>` | Comma-separated: `canvas`, `markdown`, `tldraw`, `drawio` | `canvas,markdown` |
-| `--tldraw-format <fmt>` | tldraw output: `tldr`, `obsidian`, or `both` | `both` |
-| `--vault <path>` | Obsidian vault root — defaults output to `{vault}/miro-export` and computes vault-relative image paths | — |
-| `--no-images` | Skip image/document download | — |
-| `--scale <number>` | Coordinate scale factor | `1.0` |
-| `--dry-run` | Preview extraction without writing files | — |
-| `--verbose` | Detailed logging | — |
+[Miro's setup guide](https://developers.miro.com/docs/rest-api-build-your-first-hello-world-app)
+includes screenshots. If your organization restricts app installation, contact
+its Miro administrator.
 
-Requires a Miro OAuth token with `boards:read` scope. Token is resolved in order: `--token` flag → `MIRO_ACCESS_TOKEN` env → `token` file in cwd → interactive prompt.
+Keep your token private. The exporter does not save it; paste it again for each
+export.
 
-## Development
+## Export formats
 
-### Setup
+The maintainer has tested **standard `.tldr` export**. The other formats are
+inherited from the original project and have not been manually tested in this
+fork.
 
-```bash
-git clone <repo> && cd miro-migrator
-npm install
-npm test          # 98 tests via vitest
-npm run build     # build with tsup
-```
+| Format | Output | Open with |
+| --- | --- | --- |
+| tldraw → Standard .tldr | `.tldr` | tldraw |
+| Obsidian Canvas | `.canvas` | Obsidian |
+| tldraw → Obsidian .tldraw.md | `.tldraw.md` | Obsidian's [tldraw plugin](https://github.com/holxsam/tldraw-in-obsidian) |
+| draw.io | `.drawio` | draw.io / diagrams.net |
+| Markdown | `.md` notes and a board index in `miro-notes/` | A Markdown editor |
 
-Requires Node.js >= 20.
+For Obsidian exports, select your vault's main folder as the output folder.
+Downloaded images and documents are saved in `assets/`; keep that folder with
+exports that reference it.
 
-### Structure
+## Limitations
 
-```
-src/
-  index.ts                          # Entry point
-  cli.ts                            # CLI (commander) with interactive mode
-  model/
-    types.ts                        # IR types (IRBoard, IRNode, IREdge, IRAsset)
-    color.ts                        # Miro named colors → hex parsing
-    coordinate-transform.ts         # Miro center-origin → top-left
-  extract/
-    miro-extractor.ts               # Bulk fetch + concurrent detail-fetch → IR
-    image-downloader.ts             # Two-step image download (API → CDN)
-  generate/
-    canvas/
-      canvas-generator.ts           # IR → .canvas (JSON Canvas spec)
-      canvas-color-map.ts           # Miro colors → Canvas presets
-    tldraw/
-      tldraw-generator.ts           # IR → .tldr (tldraw JSON)
-      tldraw-color-map.ts           # Miro colors → tldraw named colors
-      tldraw-obsidian-wrapper.ts    # .tldr → .tldraw.md for Obsidian plugin
-    drawio/
-      drawio-generator.ts           # IR → .drawio (mxGraph XML)
-      drawio-color-map.ts           # Miro colors → draw.io fill/stroke hex pairs
-    markdown/
-      markdown-generator.ts         # IR → .md notes + board index
-  utils/
-    rate-limiter.ts                 # Token bucket (800 req/min)
-    progress.ts                     # CLI progress bar
-    html-to-markdown.ts             # Miro HTML → Markdown
-    id-map.ts                       # Miro ID → stable short ID mapping
-  __tests__/                        # vitest unit tests
-```
+- Conversion can change the layout or omit unsupported Miro content. Review any
+  export warnings and check the result in your destination app.
+- Standard `.tldr` files use remote image links, even with **Download images and
+  documents** selected. Images may require Miro access and may not work offline.
+- An interrupted or failed export can leave incomplete files.
 
-### Architecture
+## Troubleshooting
 
-```
-Miro REST API (v2 + v1) ──> [Extractor] ──> Intermediate Representation (IR)
-                                                    │
-                                  ┌─────────────────┼──────────────┬──────────────┐
-                                  │                 │              │              │
-                          [CanvasGenerator] [TldrawGenerator] [DrawioGenerator] [MarkdownGenerator]
-                                  │                 │              │              │
-                            .canvas file   .tldr/.tldraw.md    .drawio        .md notes
-```
+| Problem | What to try |
+| --- | --- |
+| Token rejected | Get a new token and paste it again. |
+| Access denied or board not found | Check the board URL, the token's `boards:read` permission, and access to the board's team. |
+| Rate limit reached | Wait before retrying. |
+| Cannot write files | Choose a writable output folder and check available disk space. |
+| Missing images | Standard `.tldr` uses remote links that may require Miro access or expire. For other formats, keep the `assets/` folder with the export. |
+| Windows shows an unrecognized-app warning | The executable is unsigned. Check that you downloaded it from this repository's release page. |
 
-The IR layer decouples extraction from generation. Each output format has its own generator module.
+To [report a problem](https://github.com/SabulineHorizon/miroboard-export-tool/issues),
+include your app version, export format, and steps to reproduce it. Remove tokens
+and private board content from screenshots or examples.
+
+## Development and credits
+
+See the [development guide](docs/DEVELOPMENT.md) for building from source, CLI
+usage, and testing.
+
+Forked from [essoen/miroboard-export-tool](https://github.com/essoen/miroboard-export-tool),
+which provides the original CLI, Miro extraction, and format generators.
+
+This fork's Windows GUI and accompanying changes were developed using OpenAI
+Codex under the maintainer's direction.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE), which permits reuse,
+modification, and redistribution, including commercial use, provided its
+copyright and license notices are retained. Third-party components retain their
+own licenses; see [third-party notices](THIRD_PARTY_NOTICES.txt).

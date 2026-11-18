@@ -1,7 +1,12 @@
 import { MiroApi } from "@mirohq/miro-api";
 
+const boardId = process.argv[2];
+if (!boardId || !process.env.MIRO_ACCESS_TOKEN) {
+  console.error("Usage: node scripts/inspect-board.mjs <board-id> (set MIRO_ACCESS_TOKEN in your environment)");
+  process.exit(1);
+}
 const api = new MiroApi(process.env.MIRO_ACCESS_TOKEN);
-const board = await api.getBoard("o9J_kvEVBpQ=");
+const board = await api.getBoard(boardId);
 
 // Sample items by type
 const byType = {};
