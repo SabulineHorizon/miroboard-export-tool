@@ -1,5 +1,16 @@
 # Publication validation — November 18, 2026
 
+Internal validation record for contributors. For usage and current limitations,
+see the [README](README.md).
+
+## Maintainer testing update — November 18, 2026
+
+The maintainer reports testing standard `.tldr` export. Other output formats
+have not been manually tested by the maintainer in this fork. The automated
+fixture checks below cover file generation, not end-to-end compatibility with
+every destination application. Earlier unverified items below describe the scope
+of those checks at the time, rather than the current scope of maintainer testing.
+
 ## Additional manual report — November 18, 2026
 
 The maintainer reports copying a build from the project's `release/` directory
@@ -97,7 +108,8 @@ is not evidence that direct Playwright wrapper attachment works on other hosts.
 
 Remaining manual verification: a clean Windows machine without Node/npm; live
 Miro board access, real image/document downloads, and import into current
-tldraw.com. Follow the README's live-check steps. The release is unsigned and
+tldraw.com. Manual checks should cover board access, asset downloads, and opening the output
+in the destination app. The release is unsigned and
 uses the default Electron icon. Matching output filenames are overwritten and
 failed exports can leave partial files. Standard `.tldr` assets keep the existing
 remote-link behavior, so downloading images does not guarantee offline images.
