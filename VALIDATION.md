@@ -1,5 +1,21 @@
 # Publication validation — November 18, 2026
 
+## Additional manual report — November 18, 2026
+
+The maintainer reports copying a build from the project's `release/` directory
+to another computer, where it appeared to run properly. The exact executable,
+destination Windows version, installed dependencies and export steps were not
+recorded. This is evidence of a reported launch on another computer, not a
+verified live export or a dependency-free clean-machine test of a specific hash.
+
+The first GUI release uses the November 18 packaged application and portable
+wrapper, with the wrapper renamed to the public download filename. Its runtime
+files are checked against the local desktop build, and its SHA-256 is provided
+with the release. Documentation and the interface screenshot do not change the
+application runtime.
+
+## Automated publication checks
+
 Rechecked on Windows with Node 26.13.1, Electron 45.3.2,
 electron-builder 26.18.1 and Playwright 1.65.0. No real Miro credentials used.
 
