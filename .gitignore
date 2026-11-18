@@ -1,6 +1,16 @@
 node_modules/
 dist/
+desktop-dist/
+release/
+test-output/
+.npm-cache/
 .env
+.env.*
+!.env.example
+*.log
+playwright-report/
+test-results/
+docs/discovery-candidates/
 *.tgz
 .DS_Store
 miro-export/

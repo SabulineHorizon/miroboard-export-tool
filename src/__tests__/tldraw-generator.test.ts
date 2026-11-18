@@ -64,6 +64,7 @@ describe("generateTldraw", () => {
       id: "document:document",
       typeName: "document",
       name: "Test Board",
+      gridSize: 10,
     });
     expect(page).toMatchObject({
       id: "page:page",
