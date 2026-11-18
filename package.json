@@ -8,6 +8,7 @@
     "miro-migrate": "./dist/index.js"
   },
   "scripts": {
+    "licenses": "node scripts/generate-notices.mjs",
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
@@ -35,6 +36,11 @@
       "package.json"
     ],
     "asar": true,
+    "extraFiles": [
+      { "from": "LICENSE", "to": "LICENSE" },
+      { "from": "THIRD_PARTY_NOTICES.txt", "to": "THIRD_PARTY_NOTICES.txt" },
+      { "from": "legal", "to": "legal" }
+    ],
     "npmRebuild": false,
     "win": {
       "target": [

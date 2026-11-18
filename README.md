@@ -90,3 +90,13 @@ usage, and testing.
 
 Forked from [essoen/miroboard-export-tool](https://github.com/essoen/miroboard-export-tool),
 which provides the original CLI, Miro extraction, and format generators.
+
+This fork's Windows GUI and accompanying changes were developed using OpenAI
+Codex under the maintainer's direction.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE), which permits reuse,
+modification, and redistribution, including commercial use, provided its
+copyright and license notices are retained. Third-party components retain their
+own licenses; see [third-party notices](THIRD_PARTY_NOTICES.txt).

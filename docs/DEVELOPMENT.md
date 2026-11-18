@@ -113,6 +113,22 @@ Build outputs (`dist/`, `desktop-dist/`, `release/`), dependencies, caches, and 
 artifacts are excluded from Git. Release executables are distributed through
 GitHub Releases rather than committed to the source tree.
 
+## License notices for releases
+
+`npm run licenses` regenerates `THIRD_PARTY_NOTICES.txt` from the installed
+production dependencies and Electron. The desktop build runs it automatically
+and fails if a dependency's license text is missing. Commit updated notices
+alongside dependency changes. See [license provenance](../legal/README.md) for
+the version-specific fallback texts.
+
+Windows packaging includes `LICENSE`, `THIRD_PARTY_NOTICES.txt`, and `legal/`
+beside the application executable, along with Electron's license and Chromium
+notices. The portable launcher extracts these files with the application.
+Include the project license and notices as separate release downloads as well,
+so users can read them without launching the executable. Existing published
+executables are not changed by a source update; rebuild and verify them before
+publishing a new binary.
+
 ## Reporting problems and contributing
 
 When reporting a GUI problem, include your Windows version, app version or commit,
